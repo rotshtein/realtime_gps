@@ -15,40 +15,39 @@ def get_ephemeris(ephemeris_directory):
     yearExtension = year-2000
     yday = time.localtime().tm_yday
     filename = 'brdc' + str(yday).zfill(3) + '0.' + str(yearExtension) + 'n'
-    print '***********' + filename
     eFile = ephemeris_directory + '/' + filename
+
     if is_windows():
         eFile = ephemeris_directory + '\\' + filename
 
     if not os.path.isfile(eFile):
         if not os.path.isfile(eFile + '.Z'):
-            print 'get the ephemeris file ' + filename + '\n\r'
-            source = 'http://ftp.pecny.cz/ftp/LDC/orbits/' + filename +'.Z'
-            print 'File location=' + eFile
+            print ('get the ephemeris file ' + filename + '\n\r')
+            source = 'http://ftp.pecny.cz/ftp/LDC/orbits/brdc/' + str(year) + '/' + filename +'.Z'
+            print ('File location=' + eFile)
             dFile = wget.download(source, ephemeris_directory)
-            print '\n\r' + dFile+ ' Downloaded\n\r'
+            print ('\n\r' + dFile+ ' Downloaded\n\r')
         else:
             dFile = eFile + '.Z'
-        print 'Uncompress...\n\r'
+        print ('Uncompress...\n\r')
 	if is_windows():
             subprocess.call(GZIP_DIR + '\\7z e '+ dFile + ' -o' + ephemeris_directory, shell=True)
         else:
             subprocess.call('gunzip -k -d '+ dFile, shell=True)
-        print 'Finish to Uncompress\n\r'
+        print ('Finish to Uncompress\n\r')
     return eFile
 
 def buildIQ(eFile, duration, csv_file, location, binfilename):
-    print eFile
     if csv_file is None:
         print '\nBuilding static location\n'
         if is_windows():
-            print 'gps-sdr-sim -v -T now -e ' + eFile + ' -l ' + location + ' -b 8 -d '+ duration + ' -s 4000000' + ' -o ' + binfilename
+            print ('gps-sdr-sim -v -T now -e ' + eFile + ' -l ' + location + ' -b 8 -d '+ duration + ' -s 4000000' + ' -o ' + binfilename)
             subprocess.call('gps-sdr-sim -v -T now -e ' + eFile + ' -l ' + location + ' -b 8 -d '+ duration + ' -s 4000000' + ' -o ' + binfilename, shell=True)
         else:
             subprocess.call('./gps-sdr-sim -v -T now -e ' + eFile + ' -l ' + location + ' -b 8 -d '+ duration + ' -s 4000000' + ' -o ' + binfilename, shell=True)			
         #subprocess.call('gps-sdr-sim -v -e ' + eFile + ' -l 32.1464833,34.933,30 -b 8 -d '+ duration + ' -s 4000000', shell=True)
     else:
-        print '\nBuilding dynamic location according ' + csv_file + '\n'
+        print ('\nBuilding dynamic location according ' + csv_file + '\n')
         if is_windows():
             subprocess.call('gps-sdr-sim -v -T now -e ' + eFile + ' -u ' + csv_file + ' -b 8 -d '+ duration + ' -s 4000000' + ' -o ' + binfilename, shell=True)
         else:
@@ -65,8 +64,8 @@ def RunRealtime(eFile, location, binfilename):
     
 def start_broadcast(binFile, additional_param):
     global HACKRF_DIR 
-    print 'HACKRF_DIR = ' + HACKRF_DIR
-    print 'hackrf_transfer from ' + binFile + '\n\r'
+    print ( 'HACKRF_DIR = ' + HACKRF_DIR)
+    print ( 'hackrf_transfer from ' + binFile + '\n\r')
     #subprocess.call([HACKRF_DIR + '\\hackrf_transfer', '-t',  binFile,'-f', '1575420000', '-s', '4000000', '-a', '1', '-x', '1', '-R'],shell=True)
     command = HACKRF_DIR + '\\hackrf_transfer -t ' + binFile + ' -f 1575420000 -s 4000000 -a 1 -x 1 ' + additional_param
     subprocess.call(command,shell=True)
@@ -132,7 +131,7 @@ def main():
     
     if results.input_sim_filename is None:
         ephemerisFile = get_ephemeris(FILES_DIR)
-        print 'ephemerisFile = ' + ephemerisFile
+        print ('ephemerisFile = ' + ephemerisFile)
         if results.realtime is False:
             results.input_sim_filename = buildIQ(ephemerisFile, results.duration, results.csv_file, results.location, results.sim_filename)
     if results.realtime is True:

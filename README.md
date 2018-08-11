@@ -33,4 +33,5 @@ In order to run the map on windows please copy the   maps    directory to Window
     
   3. on the Windows computrer 
     >  run_server <linux ip address>
+    > browse to   https://127.0.0.1:4242/index.html
     
