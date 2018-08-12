@@ -59,7 +59,7 @@ def RunRealtime(eFile, location, binfilename):
         print ('gps-sdr-sim -b 8 -e ' + eFile + '-l ' + location)
         subprocess.call('.gps-sdr-sim -b 8 -e ' + eFile + ' -l ' + location, shell=True)
     else:
-        subprocess.call('nc -l 0.0.0.0 22500 | ./rt_gpssim  -b 8 -e ' + eFile + ' -l  ' + location, shell=True)			
+        subprocess.call('nc -l 0.0.0.0 22500 -k | ./rt_gpssim  -b 8 -e ' + eFile + ' -l  ' + location, shell=True)			
     return binfilename    
     
 def start_broadcast(binFile, additional_param):
