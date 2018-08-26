@@ -1,9 +1,7 @@
 # Realtime GPS-SDR-SIM
 
 Realrtime GPS-SDR-SIM generates GPS baseband signal data streams, which can be converted 
-to RF using software-defined radio (SDR) platforms, such as 
-[bladeRF](http://nuand.com/), [HackRF](https://github.com/mossmann/hackrf/wiki), and [USRP](http://www.ettus.com/).
-
+to RF using software-defined radio (SDR) platforms, such as [HackRF](https://github.com/mossmann/hackrf/wiki).
 
 ### Prerequisites
     1. create fifo called gpssim.bin
@@ -15,23 +13,29 @@ to RF using software-defined radio (SDR) platforms, such as
     3. Install socket.io for the nodejs
        > sudo npm install socket.io
 
+    4. internet connection to the raspberry
+
+    5. network connection between the Windows and the Linux/raspberry (you need to know the raspberry IP)
        
-       
-### Linuxs build instructions
+  # Linuxs build instructions
     > make
+    > chmod +x realtime rt_gpssim transmit.sh
     
-In order to run the map on windows please copy the   maps    directory to Windows    
+  # Windows    
+    In order to run the map on windows please copy the "maps" directory to Windows    
 
 
 ### Runing
-  1. start the rt_gpssim by runing 
-     > python run.py -r
+  # Linux/Raspberry side
+    1. Connect the hackrf
+    2. start the rt_gpssim by runing 
+     > ./realtime
      
-  2. run the hackrf transmit utility by
+    3. run the hackrf transmit utility by
     > ./transmit.sh
     
     
-  3. on the Windows computrer 
-    >  run_server <linux ip address>
+  # Windows computrer 
+    >  run_server <linux ip address> from the "maps" directory
     > browse to   https://127.0.0.1:4242/index.html
     
