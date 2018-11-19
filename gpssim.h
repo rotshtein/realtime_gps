@@ -1,6 +1,8 @@
 #ifndef GPSSIM_H
 #define GPSSIM_H
 
+#define FLOAT_CARR_PHASE // For RKT simulation. Higher computational load, but smoother carrier phase.
+
 #define TRUE	(1)
 #define FALSE	(0)
 
@@ -14,7 +16,12 @@
 #define MAX_CHAN (16)
 
 /*! \brief Maximum number of user motion points */
+#ifndef USER_MOTION_SIZE
 #define USER_MOTION_SIZE (3000) // max duration at 10Hz
+#endif
+
+/*! \brief Maximum duration for static mode*/
+#define STATIC_MAX_DURATION (86400) // second
 
 /*! \brief Number of subframes */
 #define N_SBF (5) // 5 subframes per frame
@@ -41,6 +48,11 @@
 #define POW2_M33 1.164153218269348e-10
 #define POW2_M43 1.136868377216160e-13
 #define POW2_M55 2.775557561562891e-17
+
+#define POW2_M50 8.881784197001252e-016
+#define POW2_M30 9.313225746154785e-010
+#define POW2_M27 7.450580596923828e-009
+#define POW2_M24 5.960464477539063e-008
 
 // Conventional values employed in GPS ephemeris model (ICD-GPS-200)
 #define GM_EARTH 3.986005e14
@@ -114,6 +126,8 @@ typedef struct
 	double af1;	/*!< rate (sec/sec) */
 	double af2;	/*!< acceleration (sec/sec^2) */
 	double tgd;	/*!< Group delay L2 bias */
+	int svhlth;
+	int codeL2;
 	// Working variables follow
 	double n; 	/*!< Mean motion (Average angular velocity) */
 	double sq1e2;	/*!< sqrt(1-e^2) */
@@ -123,11 +137,23 @@ typedef struct
 
 typedef struct
 {
+	int enable;
+	int vflg;
+	double alpha0,alpha1,alpha2,alpha3;
+	double beta0,beta1,beta2,beta3;
+	double A0,A1;
+	int dtls,tot,wnt;
+	int dtlsf,dn,wnlsf;
+} ionoutc_t;
+
+typedef struct
+{
 	gpstime_t g;
 	double range; // pseudorange
 	double rate;
 	double d; // geometric distance
 	double azel[2];
+	double iono_delay;
 } range_t;
 
 /*! \brief Structure representing a Channel */
@@ -137,8 +163,12 @@ typedef struct
 	int ca[CA_SEQ_LEN]; /*< C/A Sequence */
 	double f_carr;	/*< Carrier frequency */
 	double f_code;	/*< Code frequency */
+#ifdef FLOAT_CARR_PHASE
+	double carr_phase;
+#else
 	unsigned int carr_phase; /*< Carrier phase */
 	int carr_phasestep;	/*< Carrier phasestep */
+#endif
 	double code_phase; /*< Code phase */
 	gpstime_t g0;	/*!< GPS time at start */
 	unsigned long sbf[5][N_DWRD_SBF]; /*!< current subframe */
