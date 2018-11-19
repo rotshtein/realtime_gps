@@ -23,7 +23,8 @@ def get_ephemeris(ephemeris_directory):
     if not os.path.isfile(eFile):
         if not os.path.isfile(eFile + '.Z'):
             print 'get the ephemeris file ' + filename + '\n\r'
-            source = 'http://ftp.pecny.cz/ftp/LDC/orbits/brdc/' + str(year) + '/' + filename +'.Z'
+            #source = 'http://ftp.pecny.cz/ftp/LDC/orbits/brdc/' + str(year) + '/' + filename +'.Z'
+            source = 'ftp://cddis.gsfc.nasa.gov/gnss/data/daily/' + str(year) + '/' + str(yday).zfill(3) + '/' + str(yearExtension) + 'n/' + filename +'.Z'
             print 'File location=' + eFile
             dFile = wget.download(source, ephemeris_directory)
             print '\n\r' + dFile+ ' Downloaded\n\r'
